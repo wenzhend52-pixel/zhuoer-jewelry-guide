@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, MessageCircle, Store } from "lucide-react";
 import { ElementBadge } from "@/components/ElementBadge";
-import { findJewelry } from "@/lib/db";
+import { jewelries } from "@/lib/jewelries";
 import { elementMeta } from "@/lib/wuxing";
 
 type JewelryDetailProps = {
@@ -12,8 +12,16 @@ type JewelryDetailProps = {
   };
 };
 
-export default async function JewelryDetailPage({ params }: JewelryDetailProps) {
-  const jewelry = await findJewelry(params.slug);
+export function generateStaticParams() {
+  return jewelries.map((jewelry) => ({
+    slug: jewelry.slug
+  }));
+}
+
+export const dynamicParams = false;
+
+export default function JewelryDetailPage({ params }: JewelryDetailProps) {
+  const jewelry = jewelries.find((item) => item.slug === params.slug || item.id === params.slug);
 
   if (!jewelry) {
     notFound();
